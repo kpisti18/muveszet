@@ -1,0 +1,130 @@
+
+openapi: 3.0.0
+info:
+  title: Művészeti Kiállítás API
+  version: 1.0.0
+  description: REST API egy galéria művészeinek és alkotásainak nyilvántartásához
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /muveszFelvitel:
+    post:
+      summary: Új művész felvitele
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nev:
+                  type: string
+                nemzetiseg:
+                  type: string
+              required: [nev]
+      responses:
+        '200':
+          description: Válasz szöveges formában
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /alkotasFelvitel:
+    post:
+      summary: Új alkotás felvitele
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                muvesz_id:
+                  type: integer
+                cim:
+                  type: string
+                ev:
+                  type: integer
+              required: [muvesz_id, cim, ev]
+      responses:
+        '200':
+          description: Válasz szöveges formában
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /muveszAlkotasai/{muvesz_id}:
+    get:
+      summary: Egy művész alkotásai
+      parameters:
+        - in: path
+          name: muvesz_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista az alkotásokról
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    cim:
+                      type: string
+                    ev:
+                      type: integer
+
+  /alkotasTorles/{id}:
+    delete:
+      summary: Egy alkotás törlése
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Válasz szöveges formában
+          content:
+            text/plain:
+              schema:
+                type: string
+
+
+  /alkotasokMuveszNevekkel:
+    get:
+      summary: Művek művész nevekkel
+      description: Listázza az alkotásokat a hozzájuk tartozó művész nevével INNER JOIN segítségével
+      responses:
+        '200':
+          description: Lista az alkotásokról művésznevekkel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    cim:
+                      type: string
+                    ev:
+                      type: integer
+                    muvesz_neve:
+                      type: string
+        '500':
+          description: Hiba a lekérdezés során
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
